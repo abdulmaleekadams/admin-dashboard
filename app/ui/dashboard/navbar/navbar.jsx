@@ -9,9 +9,18 @@ import {
 import styles from './navbar.module.css';
 const Navbar = () => {
   const pathname = usePathname();
+  let currentPath = '';
+
+  if (pathname.indexOf('products/add', 0) >= 0) {
+    currentPath = 'add product';
+  } else if (pathname.indexOf('users/add', 0) >= 0) {
+    currentPath = 'add user';
+  } else {
+    currentPath = pathname.split('/').pop();
+  }
   return (
     <div className={styles.container}>
-      <div className={styles.title}>{pathname.split('/').pop()}</div>
+      <div className={styles.title}>{currentPath}</div>
       <div className={styles.menu}>
         <div className={styles.search}>
           <MdSearch />
