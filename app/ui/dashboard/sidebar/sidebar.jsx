@@ -78,7 +78,7 @@ const menuItems = [
 ];
 const Sidebar = () => {
   return (
-    <div className={styles.container}>
+    <aside className={styles.container}>
       <div className={styles.user}>
         <Image
           className={styles.userImage}
@@ -102,7 +102,10 @@ const Sidebar = () => {
           </li>
         ))}
       </ul>
-    </div>
+      <button className={styles.logout}>
+        <MdLogout /> Logout
+      </button>
+    </aside>
   );
 };
 
