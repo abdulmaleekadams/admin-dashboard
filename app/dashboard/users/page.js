@@ -4,8 +4,13 @@ import styles from '@/app/ui/dashboard/users/users.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import Pagination from '@/app/ui/dashboard/pagination/pagination';
+import { fetchUser } from '@/app/lib/data';
+import { formatDate } from '@/app/lib/utils';
 
-const Users = () => {
+const Users = async ({searchParams}) => {
+  const q = searchParams?.q
+  const page = searchParams?.page || 1
+  const {usersData, count} = await fetchUser(q, page);
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -26,45 +31,59 @@ const Users = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div className={styles.user}>
-                <Image
-                  src='/noavatar.png'
-                  alt=''
-                  width={40}
-                  height={40}
-                  className={styles.userImage}
-                />
-                John Doe
-              </div>
-            </td>
-            <td>jndoe@gmail.com</td>
-            <td>14.02.2024</td>
-            <td>Admin</td>
-            <td>
-              <span className={`${styles.status} ${styles.pending}`}>
-                Pending
-              </span>
-            </td>
-            <td>
-              <div className={styles.buttons}>
-                <Link href='/'>
-                  <button className={`${styles.button} ${styles.view}`}>
-                    View
-                  </button>
-                </Link>
-                <Link href='/'>
-                  <button className={`${styles.button} ${styles.delete}`}>
-                    Delete
-                  </button>
-                </Link>
-              </div>
-            </td>
-          </tr>
+          {usersData.map(
+            ({
+              _id,
+              username,
+              email,
+              img,
+              isAdmin,
+              isActive,
+              phone,
+              address,
+              createdAt,
+            }) => (
+              <tr>
+                <td>
+                  <div className={styles.user}>
+                    <Image
+                      src={img}
+                      alt=''
+                      width={40}
+                      height={40}
+                      className={styles.userImage}
+                    />
+                    {username}
+                  </div>
+                </td>
+                <td>{email}</td>
+                <td>{formatDate(createdAt)}</td>
+                <td>{isAdmin ? 'Admin' : 'User'}</td>
+                <td>
+                  <span className={`${styles.status} ${styles.pending}`}>
+                    Pending
+                  </span>
+                </td>
+                <td>
+                  <div className={styles.buttons}>
+                    <Link href='/'>
+                      <button className={`${styles.button} ${styles.view}`}>
+                        View
+                      </button>
+                    </Link>
+                    <Link href={`/user/${_id}`}>
+                      <button className={`${styles.button} ${styles.delete}`}>
+                        Delete
+                      </button>
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
-      <Pagination />
+      <Pagination count={count} />
     </div>
   );
 };
