@@ -4,13 +4,13 @@ import styles from '@/app/ui/dashboard/users/users.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import Pagination from '@/app/ui/dashboard/pagination/pagination';
-import { fetchUser } from '@/app/lib/data';
+import { fetchUsers } from '@/app/lib/data';
 import { formatDate } from '@/app/lib/utils';
 
 const Users = async ({searchParams}) => {
   const q = searchParams?.q
   const page = searchParams?.page || 1
-  const {usersData, count} = await fetchUser(q, page);
+  const {usersData, count} = await fetchUsers(q, page);
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -58,15 +58,17 @@ const Users = async ({searchParams}) => {
                 </td>
                 <td>{email}</td>
                 <td>{formatDate(createdAt)}</td>
-                <td>{isAdmin ? 'Admin' : 'User'}</td>
+                <td>{isAdmin ? 'Admin' : 'Client'}</td>
                 <td>
-                  <span className={`${styles.status} ${styles.pending}`}>
-                    Pending
+                  <span
+                    className={`${styles.status} ${isActive ?styles.active: styles.pending }`}
+                  >
+                    {isActive ? 'Active' : 'Passive'}
                   </span>
                 </td>
                 <td>
                   <div className={styles.buttons}>
-                    <Link href='/'>
+                    <Link href={`users/${username}`}>
                       <button className={`${styles.button} ${styles.view}`}>
                         View
                       </button>

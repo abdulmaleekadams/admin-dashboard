@@ -1,8 +1,8 @@
 import { Product, User } from './models';
 import { connectToDB } from './utils';
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
-export const fetchUser = async (q, page) => {
+export const fetchUsers = async (q, page) => {
   const regex = new RegExp(q, 'i');
 
   const item_per_page = 20;
@@ -13,12 +13,11 @@ export const fetchUser = async (q, page) => {
     const usersData = await User.find({ username: { $regex: regex } })
       .limit(item_per_page)
       .skip(item_per_page * (page - 1));
-    return {count, usersData};
+    return { count, usersData };
   } catch (error) {
     console.log(error);
-    throw new Error('Failed to fetch users!');
   } finally {
-    await mongoose.disconnect()
+    await mongoose.disconnect();
   }
 };
 
@@ -33,12 +32,11 @@ export const fetchProduct = async (q, page) => {
     const productsData = await Product.find({ title: { $regex: regex } })
       .limit(item_per_page)
       .skip(item_per_page * (page - 1));
-    return {count, productsData};
+    return { count, productsData };
   } catch (error) {
     console.log(error);
-    throw new Error('Failed to fetch users!');
   } finally {
-    await mongoose.disconnect()
+    await mongoose.disconnect();
   }
 };
 
@@ -48,8 +46,23 @@ export const addData = async (data, model) => {
     await model.insertMany(data);
     console.log('Data added to database');
   } catch (error) {
-    console.log(error.message);
-    throw new Error('Failed to fetch users!');
+    console.log(error);
+  } finally {
+    await mongoose.disconnect();
+  }
+};
+
+export const fetchUser = async (username) => {
+  try {
+    await connectToDB();
+    console.log('Database connected');
+    const user = await User.findOne({ username: username });
+    user && console.log('User found');
+    return user;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await mongoose.disconnect();
   }
 };
 
