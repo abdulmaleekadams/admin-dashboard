@@ -10,7 +10,9 @@ export const fetchUsers = async (q, page) => {
   try {
     await connectToDB();
     const count = await User.find({ username: { $regex: regex } }).count();
-    const usersData = await User.find({ username: { $regex: regex } }).sort({createdAt: -1})
+    const usersData = await User.find({ username: { $regex: regex } })
+      .select('-password')
+      .sort({ createdAt: -1 })
       .limit(item_per_page)
       .skip(item_per_page * (page - 1));
     return { count, usersData };
@@ -21,7 +23,7 @@ export const fetchUsers = async (q, page) => {
   }
 };
 
-export const fetchProduct = async (q, page) => {
+export const fetchProducts = async (q, page) => {
   const regex = new RegExp(q, 'i');
 
   const item_per_page = 20;
@@ -57,9 +59,23 @@ export const fetchUser = async (username) => {
   try {
     await connectToDB();
     console.log('Database connected');
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: username }).select('-password');
     user && console.log('User found');
     return user;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await mongoose.disconnect();
+  }
+};
+
+export const fetchProduct = async (title) => {
+  try {
+    await connectToDB();
+    console.log('Database connected');
+    const product = await Product.findOne({ title: title });
+    product && console.log('Product found');
+    return product;
   } catch (error) {
     console.log(error);
   } finally {

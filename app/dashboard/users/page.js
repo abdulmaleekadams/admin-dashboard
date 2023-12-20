@@ -33,16 +33,8 @@ const Users = async ({ searchParams }) => {
         </thead>
         <tbody>
           {usersData.map(
-            ({
-              _id,
-              username,
-              email,
-              img,
-              isAdmin,
-              isActive,
-              createdAt,
-            }) => (
-              <tr key={username}>
+            ({ _id, username, email, img, isAdmin, isActive, createdAt }) => (
+              <tr key={username} id={username}>
                 <td>
                   <div className={styles.user}>
                     <Image
@@ -75,7 +67,6 @@ const Users = async ({ searchParams }) => {
                       </button>
                     </Link>
                     <form action={deleteUser}>
-                      {/* <input type='hidden' value={_id} name='id' /> */}
                       <button
                         className={`${styles.button} ${styles.delete}`}
                         value={_id.toString()}

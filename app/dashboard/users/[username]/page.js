@@ -1,3 +1,4 @@
+import { updateUser } from '@/app/lib/actions';
 import { fetchUser } from '@/app/lib/data';
 import styles from '@/app/ui/dashboard/users/profile/profile.module.css';
 import Image from 'next/image';
@@ -6,7 +7,8 @@ const ProfileView = async ({ params }) => {
   const { username } = params;
   const user = await fetchUser(username);
 
-  return (
+
+  return user ? (
     <div className={styles.container}>
       <div className={styles.infoContainer}>
         <div className={styles.imgContainer}>
@@ -15,7 +17,7 @@ const ProfileView = async ({ params }) => {
         {user.username}
       </div>
       <div className={styles.formContainer}>
-        <form action='' className={styles.form}>
+        <form action={updateUser} className={styles.form}>
           <input type='hidden' name='id' value={user.id} />
           <label>Username</label>
           <input type='text' name='username' placeholder={user.username} />
@@ -49,6 +51,8 @@ const ProfileView = async ({ params }) => {
         </form>
       </div>
     </div>
+  ) : (
+    <div className={styles.container}>no user found</div>
   );
 };
 

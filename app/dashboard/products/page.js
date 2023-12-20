@@ -4,14 +4,15 @@ import Pagination from '@/app/ui/dashboard/pagination/pagination';
 import Link from 'next/link';
 import Image from 'next/image';
 import Search from '@/app/ui/dashboard/search/search';
-import { fetchProduct } from '@/app/lib/data';
+import { fetchProducts } from '@/app/lib/data';
 import { formatDate } from '@/app/lib/utils';
+import { deleteProduct } from '@/app/lib/actions';
 
 const Products = async ({ searchParams }) => {
   const q = searchParams?.q;
   const page = searchParams.page || 1;
 
-  const { productsData, count } = await fetchProduct(q, page);
+  const { productsData, count } = await fetchProducts(q, page);
 
   return (
     <div className={styles.container}>
@@ -34,8 +35,8 @@ const Products = async ({ searchParams }) => {
         </thead>
         <tbody>
           {productsData.map(
-            ({ title, desc, price, stock, img, color, size, createdAt }) => (
-              <tr>
+            ({ _id, title, desc, price, stock, img, createdAt }) => (
+              <tr key={_id}>
                 <td>
                   <div className={styles.user}>
                     <Image
@@ -59,11 +60,15 @@ const Products = async ({ searchParams }) => {
                         View
                       </button>
                     </Link>
-                    <Link href='/'>
-                      <button className={`${styles.button} ${styles.delete}`}>
+                    <form action={deleteProduct}>
+                      <button
+                        className={`${styles.button} ${styles.delete}`}
+                        value={_id.toString()}
+                        name='id'
+                      >
                         Delete
                       </button>
-                    </Link>
+                    </form>
                   </div>
                 </td>
               </tr>

@@ -16,7 +16,8 @@ const Navbar = () => {
   } else if (pathname.indexOf('users/add', 0) >= 0) {
     currentPath = 'add user';
   } else {
-    currentPath = pathname.split('/').pop();
+    currentPath = pathname.split('/').pop().replaceAll("%20", " ");
+    
   }
   return (
     <div className={styles.container}>
