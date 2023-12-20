@@ -10,7 +10,7 @@ export const fetchUsers = async (q, page) => {
   try {
     await connectToDB();
     const count = await User.find({ username: { $regex: regex } }).count();
-    const usersData = await User.find({ username: { $regex: regex } })
+    const usersData = await User.find({ username: { $regex: regex } }).sort({createdAt: -1})
       .limit(item_per_page)
       .skip(item_per_page * (page - 1));
     return { count, usersData };
@@ -30,6 +30,7 @@ export const fetchProduct = async (q, page) => {
     await connectToDB();
     const count = await Product.find({ title: { $regex: regex } }).count();
     const productsData = await Product.find({ title: { $regex: regex } })
+      .sort({ createdAt: -1 })
       .limit(item_per_page)
       .skip(item_per_page * (page - 1));
     return { count, productsData };

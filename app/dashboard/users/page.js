@@ -6,11 +6,12 @@ import Image from 'next/image';
 import Pagination from '@/app/ui/dashboard/pagination/pagination';
 import { fetchUsers } from '@/app/lib/data';
 import { formatDate } from '@/app/lib/utils';
+import { deleteUser } from '@/app/lib/actions';
 
-const Users = async ({searchParams}) => {
-  const q = searchParams?.q
-  const page = searchParams?.page || 1
-  const {usersData, count} = await fetchUsers(q, page);
+const Users = async ({ searchParams }) => {
+  const q = searchParams?.q;
+  const page = searchParams?.page || 1;
+  const { usersData, count } = await fetchUsers(q, page);
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -39,11 +40,9 @@ const Users = async ({searchParams}) => {
               img,
               isAdmin,
               isActive,
-              phone,
-              address,
               createdAt,
             }) => (
-              <tr>
+              <tr key={username}>
                 <td>
                   <div className={styles.user}>
                     <Image
@@ -61,7 +60,9 @@ const Users = async ({searchParams}) => {
                 <td>{isAdmin ? 'Admin' : 'Client'}</td>
                 <td>
                   <span
-                    className={`${styles.status} ${isActive ?styles.active: styles.pending }`}
+                    className={`${styles.status} ${
+                      isActive ? styles.active : styles.pending
+                    }`}
                   >
                     {isActive ? 'Active' : 'Passive'}
                   </span>
@@ -73,11 +74,16 @@ const Users = async ({searchParams}) => {
                         View
                       </button>
                     </Link>
-                    <Link href={`/user/${_id}`}>
-                      <button className={`${styles.button} ${styles.delete}`}>
+                    <form action={deleteUser}>
+                      {/* <input type='hidden' value={_id} name='id' /> */}
+                      <button
+                        className={`${styles.button} ${styles.delete}`}
+                        value={_id.toString()}
+                        name='id'
+                      >
                         Delete
                       </button>
-                    </Link>
+                    </form>
                   </div>
                 </td>
               </tr>
